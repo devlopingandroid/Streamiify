@@ -11,10 +11,10 @@ export const Button = ({
 }) => {
   // Variant mapping using tailwind classes
   const variants = {
-    solid: "bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold shadow-sm hover:scale-[1.01] active:scale-[0.97]",
-    outline: "border border-slate-700 bg-slate-800/80 text-slate-200 hover:bg-slate-700 hover:text-white active:scale-[0.97]",
-    ghost: "text-slate-400 hover:bg-slate-800/60 hover:text-slate-200 active:scale-[0.97]",
-    danger: "border border-red-500/50 bg-red-500/10 text-red-400 hover:bg-red-500/20 active:scale-[0.97]",
+    solid: "bg-[#F1F5F9] border border-[#E2E8F0] text-[#0F172A] font-semibold shadow-sm hover:bg-[#E2E8F0] hover:scale-[1.01] active:scale-[0.97]",
+    outline: "border border-[#E2E8F0] bg-white text-[#334155] hover:bg-[#F1F5F9] hover:text-[#0F172A] active:scale-[0.97]",
+    ghost: "text-[#64748B] hover:bg-[#F1F5F9] hover:text-[#0F172A] active:scale-[0.97]",
+    danger: "border border-red-200 bg-white text-red-500 hover:bg-red-50 active:scale-[0.97]",
   };
 
   const sizes = {

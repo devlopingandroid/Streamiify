@@ -2,7 +2,7 @@ import axios from "axios";//
 import { store } from "../store";
 import { clearAuth } from "../store/authSlice";
 
-const BASE_URL = import.meta.env.VITE_API_BASE_URL || "https://streamiify.onrender.com";
+const BASE_URL = import.meta.env.VITE_API_BASE_URL || "https://projectbackend-production-eaca.up.railway.app";
 
 /**
  * Normalized API error parser.

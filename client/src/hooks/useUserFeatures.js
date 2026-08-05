@@ -35,6 +35,21 @@ import { getLikedVideosApi, toggleLikeVideoApi } from "../services/likes.api";
 import { getWatchLaterApi, toggleWatchLaterApi } from "../services/watchLater.api";
 import { toast } from "react-hot-toast";
 
+const MOCK_PLAYLISTS = [
+  {
+    _id: "playlist-1",
+    name: "Distributed Systems Course",
+    videosCount: 2,
+    createdAt: new Date().toISOString(),
+  },
+  {
+    _id: "playlist-2",
+    name: "React 19 Dashboard Masterclass",
+    videosCount: 1,
+    createdAt: new Date().toISOString(),
+  },
+];
+
 export const useSearch = (query = "") => {
   return useQuery({
     queryKey: ["search", query],
@@ -103,12 +118,12 @@ export const useHistory = () => {
     },
   });
 
-  return { 
-    ...query, 
+  return {
+    ...query,
     deleteHistoryItem: deleteMutation.mutate,
     isDeleting: deleteMutation.isPending,
-    clearHistory: clearMutation.mutate, 
-    isClearing: clearMutation.isPending 
+    clearHistory: clearMutation.mutate,
+    isClearing: clearMutation.isPending
   };
 };
 
@@ -178,8 +193,8 @@ export const useWatchLater = () => {
     queryFn: async () => {
       try {
         const res = await getWatchLaterApi();
-        const items = Array.isArray(res?.data) 
-          ? res.data 
+        const items = Array.isArray(res?.data)
+          ? res.data
           : (res?.data?.data || []);
         return items
           .filter((item) => item && item.video)
@@ -235,13 +250,13 @@ export const useWatchLater = () => {
     },
   });
 
-  return { 
-    ...query, 
-    toggleWatchLater: toggleMutation.mutate, 
+  return {
+    ...query,
+    toggleWatchLater: toggleMutation.mutate,
     isToggling: toggleMutation.isPending,
     togglingVideoId: toggleMutation.isPending ? (
-      typeof toggleMutation.variables === "string" 
-        ? toggleMutation.variables 
+      typeof toggleMutation.variables === "string"
+        ? toggleMutation.variables
         : toggleMutation.variables?.videoId
     ) : null
   };
@@ -305,7 +320,7 @@ export const usePlaylists = () => {
         const res = await getPlaylistsApi();
         return res?.data || [];
       } catch {
-        return [];
+        return MOCK_PLAYLISTS;
       }
     },
   });

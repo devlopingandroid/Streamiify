@@ -25,7 +25,7 @@ export const RecommendationCard = ({ video, layout = "grid" }) => {
   return (
     <div 
       onClick={() => navigate(`/watch/${video._id}`)}
-      className={`flex rounded-xl border border-[#E2E8F0] bg-white shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-250 group overflow-hidden relative cursor-pointer ${
+      className={`flex rounded-xl border border-slate-800/80 bg-slate-900/60 hover:bg-slate-900 hover:border-slate-700/80 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-250 group overflow-hidden relative cursor-pointer ${
         isList ? "flex-col sm:flex-row gap-6 p-5" : "flex-col gap-3.5 p-5"
       }`}
     >
@@ -41,14 +41,14 @@ export const RecommendationCard = ({ video, layout = "grid" }) => {
             toggleWatchLater({ videoId: video._id, video });
           }}
           disabled={isWatchLaterPending}
-          className="w-7 h-7 rounded-full bg-white hover:bg-[#F1F5F9] border border-[#E2E8F0] flex items-center justify-center text-[#334155] hover:text-[#0F172A] transition-all shadow-sm cursor-pointer focus:outline-none disabled:opacity-50"
+          className="w-7 h-7 rounded-full bg-slate-800 hover:bg-slate-700 border border-slate-700 flex items-center justify-center text-slate-300 hover:text-white transition-all shadow-sm cursor-pointer focus:outline-none disabled:opacity-50"
           aria-label="Toggle Watch Later"
           title={isWatchLater ? "Remove from Watch Later" : "Watch Later"}
         >
           {isWatchLaterPending ? (
-            <span className="w-3 h-3 border-2 border-[#0F172A] border-t-transparent rounded-full animate-spin" />
+            <span className="w-3 h-3 border-2 border-slate-200 border-t-transparent rounded-full animate-spin" />
           ) : (
-            <Bookmark size={12} className={isWatchLater ? "fill-current text-[#0F172A]" : ""} />
+            <Bookmark size={12} className={isWatchLater ? "fill-current text-cyan-400" : ""} />
           )}
         </button>
       </div>
@@ -75,14 +75,14 @@ export const RecommendationCard = ({ video, layout = "grid" }) => {
         )}
 
         <div className="flex flex-col gap-1 flex-grow min-w-0">
-          <h3 className="text-xs font-semibold text-[#0F172A] hover:text-[#334155] transition-colors leading-relaxed line-clamp-2">
+          <h3 className="text-xs font-semibold text-slate-100 hover:text-cyan-400 transition-colors leading-relaxed line-clamp-2">
             {video.title}
           </h3>
 
           <Link
             to={video.owner?.username ? `/c/${video.owner.username}` : `/watch/${video._id}`}
             onClick={(e) => e.stopPropagation()}
-            className="text-[10px] text-[#64748B] hover:text-[#0F172A] font-medium transition-colors select-none w-fit"
+            className="text-[10px] text-slate-400 hover:text-slate-200 font-medium transition-colors select-none w-fit"
           >
             {video.owner?.fullname || "User"}
           </Link>

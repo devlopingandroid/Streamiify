@@ -35,21 +35,6 @@ import { getLikedVideosApi, toggleLikeVideoApi } from "../services/likes.api";
 import { getWatchLaterApi, toggleWatchLaterApi } from "../services/watchLater.api";
 import { toast } from "react-hot-toast";
 
-const MOCK_PLAYLISTS = [
-  {
-    _id: "playlist-1",
-    name: "Distributed Systems Course",
-    videosCount: 2,
-    createdAt: new Date().toISOString(),
-  },
-  {
-    _id: "playlist-2",
-    name: "React 19 Dashboard Masterclass",
-    videosCount: 1,
-    createdAt: new Date().toISOString(),
-  },
-];
-
 export const useSearch = (query = "") => {
   return useQuery({
     queryKey: ["search", query],
@@ -320,7 +305,7 @@ export const usePlaylists = () => {
         const res = await getPlaylistsApi();
         return res?.data || [];
       } catch {
-        return MOCK_PLAYLISTS;
+        return [];
       }
     },
   });

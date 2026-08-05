@@ -5,7 +5,7 @@ const connectDB = async () => {
   try {
     if (!process.env.MONGO_URI) {
       throw new Error(
-        "MONGO_URI environment variable is missing or undefined. Please set MONGO_URI in your Railway project Variables."
+        "MONGO_URI environment variable is missing or undefined. Please set MONGO_URI in environment variables."
       );
     }
 

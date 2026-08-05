@@ -25,16 +25,17 @@ export default cleanEnv(process.env, {
   CLOUDINARY_API_KEY: str(),
   CLOUDINARY_API_SECRET: str(),
 
-  REDIS_URL: str(),
+REDIS_URL: str({
+  default: "",
+}),
 
   CORS_ORIGIN: str(),
 
   MAX_VIDEO_SIZE: str(),
 
-  ENABLE_REDIS: bool({
-    default: true,
-  }),
-
+ENABLE_REDIS: bool({
+  default: false,
+}),
   RESEND_API_KEY: str({
     default: "",
   }),

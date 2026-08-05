@@ -4,6 +4,11 @@ import logger from "../utils/logger.js";
 let redisClient = null;
 
 export const connectRedis = async () => {
+  if (!process.env.ENABLE_REDIS || !process.env.REDIS_URL) {
+    logger.info("Redis disabled.");
+    return null;
+  }
+
   try {
     redisClient = createClient({
       url: process.env.REDIS_URL,
@@ -23,7 +28,6 @@ export const connectRedis = async () => {
 
   return redisClient;
 };
-
 export const disconnectRedis = async () => {
   if (redisClient?.isOpen) {
     await redisClient.quit();

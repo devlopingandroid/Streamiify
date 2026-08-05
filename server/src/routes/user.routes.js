@@ -1,0 +1,99 @@
+import { Router } from "express";
+
+import {
+  registerUser,
+  loginUser,
+  logOutUser,
+  refreshAccessToken,
+  changeCurrentPassword,
+  getCurrentUser,
+  updateAccountDetails,
+  updateAvatar,
+  updateCoverImage,
+  getUserChannelProfile,
+  getWatchHistory,
+  forgotPassword,
+  resetPassword,
+} from "../controllers/user.controller.js";
+
+import {
+  uploadUserFiles,
+  uploadAvatar,
+  uploadCover,
+} from "../middlewares/multer.middleware.js";
+
+import { verifyJWT } from "../middlewares/auth.middleware.js";
+
+import {
+  registerValidator,
+  forgotPasswordValidator,
+  resetPasswordValidator,
+} from "../validators/user.validator.js";
+
+import { forgotPasswordLimiter } from "../middlewares/rateLimiter.middleware.js";
+
+import { validate } from "../validators/validation.middleware.js";
+
+const router = Router();
+
+/**
+ * ==========================================
+ * Public Routes
+ * ==========================================
+ */
+
+// Register
+router.post(
+  "/register",
+  uploadUserFiles,
+  registerValidator,
+  validate,
+  registerUser
+);
+
+// Login
+router.post("/login", loginUser);
+
+// Refresh Token
+router.post("/refresh-token", refreshAccessToken);
+
+// Forgot Password
+router.post(
+  "/forgot-password",
+  forgotPasswordLimiter,
+  forgotPasswordValidator,
+  validate,
+  forgotPassword
+);
+
+// Reset Password
+router.post(
+  "/reset-password/:token",
+  resetPasswordValidator,
+  validate,
+  resetPassword
+);
+
+/**
+ * ==========================================
+ * Protected Routes
+ * ==========================================
+ */
+
+router.post("/logout", verifyJWT, logOutUser);
+
+router.post("/change-password", verifyJWT, changeCurrentPassword);
+
+router.get("/current-user", verifyJWT, getCurrentUser);
+
+router.patch("/update-account", verifyJWT, updateAccountDetails);
+
+router.patch("/avatar", verifyJWT, uploadAvatar, updateAvatar);
+
+router.patch("/cover-image", verifyJWT, uploadCover, updateCoverImage);
+
+router.get("/c/:username", verifyJWT, getUserChannelProfile);
+
+router.get("/history", verifyJWT, getWatchHistory);
+
+export default router;

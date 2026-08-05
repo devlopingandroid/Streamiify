@@ -1,0 +1,10 @@
+User-agent: *
+Allow: /
+Allow: /landing
+Disallow: /settings
+Disallow: /history
+Disallow: /watch-later
+Disallow: /liked-videos
+Disallow: /playlists
+
+Sitemap: https://streamify.enterprise/sitemap.xml

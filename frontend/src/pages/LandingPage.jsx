@@ -489,7 +489,6 @@ export const LandingPage = () => {
             <p className="text-xs text-[#6B7280] max-w-xs leading-relaxed">
               Enterprise video infrastructure for modern product teams. Fast transcoding, global CDN delivery, and deep analytics.
             </p>
-            <span className="text-[10px] text-slate-400 font-mono">v1.0.0 Stable Build</span>
           </div>
 
           <div className="flex flex-col gap-3 text-xs">

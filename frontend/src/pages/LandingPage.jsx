@@ -21,7 +21,6 @@ import {
   Settings as SettingsIcon,
   TrendingUp,
   Cpu,
-  ChevronRight,
   HardDrive,
   Activity,
   Layers,
@@ -82,12 +81,6 @@ export const LandingPage = () => {
           {/* HERO LEFT COLUMN */}
           <div className="lg:col-span-6 flex flex-col text-left">
             
-            {/* Announcement Pill */}
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-indigo-200/80 bg-indigo-50/80 text-xs font-semibold text-indigo-700 mb-6 w-fit shadow-xs animate-fade-in select-none">
-              <Zap size={14} className="text-indigo-600 fill-indigo-600/20" />
-              <span>Streamify SaaS CDN v1.0 Launch</span>
-              <ChevronRight size={14} className="text-indigo-400" />
-            </div>
 
             {/* Massive Bold Heading */}
             <h1 className="text-4xl sm:text-5xl lg:text-[60px] font-extrabold tracking-tight leading-[1.08] text-[#111827] mb-6">

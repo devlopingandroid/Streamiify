@@ -4,9 +4,9 @@ import { clearAuth } from "../store/authSlice";
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL || "https://streamiify.onrender.com";
 
-/**
+/***
  * Normalized API error parser.
- */
+ **/
 export const parseError = (error) => {
   let message = "An unexpected error occurred.";
   let status = error.response?.status || 500;

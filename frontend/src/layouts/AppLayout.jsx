@@ -203,7 +203,7 @@ const TopNavbar = ({
       {/* Responsive Search Pill */}
       <form
         onSubmit={handleSearch}
-        className="flex items-center w-full max-w-[180px] xs:max-w-[260px] sm:max-w-[420px] bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600 focus-within:border-slate-400 dark:focus-within:border-cyan-500 focus-within:ring-2 focus-within:ring-slate-100 dark:focus-within:ring-cyan-500/20 rounded-full px-3 sm:px-4 py-2 transition-all select-none mx-1 sm:mx-2"
+        className="flex items-center w-full max-w-[180px] xs:max-w-[260px] sm:max-w-[420px] bg-slate-50 dark:bg-slate-800/80 border-2 border-slate-900 dark:border-slate-600 hover:border-black dark:hover:border-slate-400 focus-within:border-black dark:focus-within:border-cyan-500 focus-within:ring-2 focus-within:ring-slate-200 dark:focus-within:ring-cyan-500/20 rounded-full px-3 sm:px-4 py-2 transition-all select-none mx-1 sm:mx-2"
       >
         <button
           type="submit"

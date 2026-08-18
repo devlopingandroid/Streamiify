@@ -384,7 +384,7 @@ export const ChannelPage = () => {
       case "about":
       default:
         return (
-          <div className="bg-white/80 dark:bg-[#0F172A]/80 rounded-2xl border border-slate-200 dark:border-slate-800 p-6 md:p-8 max-w-2xl text-left shadow-xs">
+          <div className="bg-white/80 dark:bg-[#0F172A]/80 rounded-2xl border border-slate-800 dark:border-slate-700 p-6 md:p-8 max-w-2xl text-left shadow-xs">
             <h3 className="text-base font-bold text-slate-900 dark:text-slate-100 mb-3">About {channel.fullname}</h3>
             <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 leading-relaxed mb-4">
               Welcome to the workspace of {channel.fullname}. Streamify enterprise members distribute instructionals, media cards, and system reports here.

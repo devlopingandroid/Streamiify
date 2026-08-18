@@ -16,7 +16,7 @@ export const ChartContainer = memo(({
 }) => {
   return (
     <section
-      className={`bg-white dark:bg-[#0F172A] rounded-2xl border border-slate-200 dark:border-slate-800 p-5 sm:p-6 min-h-[360px] flex flex-col relative overflow-hidden transition-all duration-300 shadow-xs hover:shadow-md ${className}`}
+      className={`bg-white dark:bg-[#0F172A] rounded-2xl border border-slate-800 dark:border-slate-700 hover:border-slate-900 dark:hover:border-slate-500 p-5 sm:p-6 min-h-[360px] flex flex-col relative overflow-hidden transition-all duration-300 shadow-xs hover:shadow-md ${className}`}
       aria-label={title}
     >
       {/* Header section */}

@@ -63,7 +63,7 @@ export const VideoCard = ({ video, layout = "grid" }) => {
   return (
     <div
       onClick={handleCardClick}
-      className={`flex rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0F172A] shadow-xs hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 group overflow-hidden relative cursor-pointer ${
+      className={`flex rounded-xl border border-slate-800 dark:border-slate-700 hover:border-slate-900 dark:hover:border-slate-500 bg-white dark:bg-[#0F172A] shadow-xs hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 group overflow-hidden relative cursor-pointer ${
         isList ? "flex-col sm:flex-row gap-6 p-5" : "flex-col gap-3.5 p-4 sm:p-5"
       }`}
     >

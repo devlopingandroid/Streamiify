@@ -198,7 +198,7 @@ export const WatchPage = () => {
           </div>
 
           {/* Video Description panel */}
-          <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-[#0F172A]/80 p-5 mt-6 shadow-xs">
+          <div className="rounded-2xl border border-slate-800 dark:border-slate-700 bg-white/80 dark:bg-[#0F172A]/80 p-5 mt-6 shadow-xs">
             <div className="flex gap-2 text-xs font-bold text-slate-700 dark:text-slate-300 mb-2">
               <span>{formatNumber(video.views)} views</span>
               <span>•</span>

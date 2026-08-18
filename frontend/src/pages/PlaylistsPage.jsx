@@ -13,7 +13,7 @@ import { toast } from "react-hot-toast";
 
 const PlaylistCardSkeleton = () => {
   return (
-    <div className="flex flex-col rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-0 animate-pulse overflow-hidden select-none">
+    <div className="flex flex-col rounded-xl border border-slate-800 dark:border-slate-700 bg-white dark:bg-slate-900 p-0 animate-pulse overflow-hidden select-none">
       <div className="aspect-video w-full shimmer-bg bg-slate-200 dark:bg-slate-800" />
       <div className="p-4 flex flex-col gap-2">
         <div className="flex justify-between items-center">
@@ -44,10 +44,10 @@ const PlaylistCard = ({ playlist, onEdit, onDelete, onVisibilityToggle, isVisibi
   return (
     <Link 
       to={`/playlists/${playlist._id}`}
-      className="group flex flex-col rounded-xl overflow-hidden border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0F172A] hover:border-slate-300 dark:hover:border-slate-700 shadow-xs hover:shadow-md transition-all duration-300 relative text-left"
+      className="group flex flex-col rounded-xl overflow-hidden border border-slate-800 dark:border-slate-700 bg-white dark:bg-[#0F172A] hover:border-slate-900 dark:hover:border-slate-500 shadow-xs hover:shadow-md transition-all duration-300 relative text-left"
     >
       {/* Thumbnail Stack */}
-      <div className="relative aspect-video w-full bg-slate-100 dark:bg-slate-950 overflow-hidden flex items-center justify-center border-b border-slate-200 dark:border-slate-800">
+      <div className="relative aspect-video w-full bg-slate-100 dark:bg-slate-950 overflow-hidden flex items-center justify-center border-b border-slate-800 dark:border-slate-700">
         {firstVideoThumbnail ? (
           <img 
             src={firstVideoThumbnail} 

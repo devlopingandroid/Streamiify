@@ -82,7 +82,7 @@ export const AnalyticsCard = memo(({
 
   return (
     <article
-      className="bg-white dark:bg-[#0F172A] rounded-2xl p-5 border border-slate-200 dark:border-slate-800 shadow-xs hover:shadow-md hover:scale-[1.01] transition-all duration-300 relative group overflow-hidden select-none"
+      className="bg-white dark:bg-[#0F172A] rounded-2xl p-5 border border-slate-800 dark:border-slate-700 hover:border-slate-900 dark:hover:border-slate-500 shadow-xs hover:shadow-md hover:scale-[1.01] transition-all duration-300 relative group overflow-hidden select-none"
       aria-label={`${title} statistics card`}
     >
       <div

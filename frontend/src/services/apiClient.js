@@ -9,13 +9,15 @@ const BASE_URL = import.meta.env.VITE_API_BASE_URL || "https://streamiify.onrend
  **/
 export const parseError = (error) => {
   let message = "An unexpected error occurred.";
-  let status = error.response?.status || 500;
-  let errors = error.response?.data?.errors || null;
+  let status = error?.response?.status || (error?.status ? error.status : 500);
+  let errors = error?.response?.data?.errors || null;
 
-  if (!error.response) {
-    if (error.code === "ECONNABORTED") {
+  if (!error?.response) {
+    if (error?.code === "ECONNABORTED") {
       message = "Connection timed out. Please try again.";
       status = 408;
+    } else if (error?.status && error?.message) {
+      message = error.message;
     } else {
       message = "Network connection failure. Please verify your internet connection.";
       status = 0;
@@ -24,7 +26,20 @@ export const parseError = (error) => {
     message = error.response?.data?.message || message;
   }
 
-  return { message, status, errors, originalError: error };
+  return {
+    status,
+    statusCode: status,
+    message,
+    errors,
+    isNetworkError: status === 0 || status === 408,
+    isAuthError: status === 401 || status === 403,
+    isRateLimited: status === 429,
+    isValidationError: status === 422,
+    isNotFound: status === 404,
+    isConflict: status === 409,
+    isServerError: status >= 500,
+    originalError: error,
+  };
 };
 
 export const apiClient = axios.create({

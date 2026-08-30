@@ -28,6 +28,10 @@ import {
   registerValidator,
   forgotPasswordValidator,
   resetPasswordValidator,
+  loginValidator,
+  changePasswordValidator,
+  updateAccountValidator,
+  usernameParamValidator,
 } from "../validators/user.validator.js";
 
 import {
@@ -56,7 +60,7 @@ router.post(
 );
 
 // Login
-router.post("/login", authLimiter, loginUser);
+router.post("/login", authLimiter, loginValidator, validate, loginUser);
 
 // Refresh Token
 router.post("/refresh-token", authLimiter, refreshAccessToken);
@@ -87,17 +91,35 @@ router.post(
 
 router.post("/logout", verifyJWT, logOutUser);
 
-router.post("/change-password", verifyJWT, changeCurrentPassword);
+router.post(
+  "/change-password",
+  verifyJWT,
+  changePasswordValidator,
+  validate,
+  changeCurrentPassword
+);
 
 router.get("/current-user", verifyJWT, getCurrentUser);
 
-router.patch("/update-account", verifyJWT, updateAccountDetails);
+router.patch(
+  "/update-account",
+  verifyJWT,
+  updateAccountValidator,
+  validate,
+  updateAccountDetails
+);
 
 router.patch("/avatar", verifyJWT, uploadAvatar, updateAvatar);
 
 router.patch("/cover-image", verifyJWT, uploadCover, updateCoverImage);
 
-router.get("/c/:username", verifyJWT, getUserChannelProfile);
+router.get(
+  "/c/:username",
+  verifyJWT,
+  usernameParamValidator,
+  validate,
+  getUserChannelProfile
+);
 
 router.get("/history", verifyJWT, getWatchHistory);
 

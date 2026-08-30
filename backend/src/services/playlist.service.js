@@ -1,4 +1,5 @@
 import playlistRepository from "../repositories/playlist.repository.js";
+import videoRepository from "../repositories/video.repository.js";
 import ApiError from "../utils/ApiError.js";
 
 /**
@@ -124,6 +125,11 @@ class PlaylistService {
    */
   async addVideoToPlaylist(playlistId, videoId, userId) {
     const playlist = await this._getOwnedPlaylist(playlistId, userId);
+
+    const video = await videoRepository.findById(videoId);
+    if (!video) {
+      throw new ApiError(404, "Video not found");
+    }
 
     // Rule 2: duplicate prevention
     const alreadyExists = playlist.videos.some(

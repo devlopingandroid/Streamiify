@@ -1,4 +1,5 @@
 import watchRepository from "../repositories/watch.repository.js";
+import videoRepository from "../repositories/video.repository.js";
 import ApiError from "../utils/ApiError.js";
 
 /**
@@ -24,10 +25,11 @@ class WatchService {
    *
    * Flow:
    * 1. Validate progress and duration values.
-   * 2. Determine if video is completed (progress >= 90% of duration).
-   * 3. Check if this is a rewatch (existing session that was completed).
-   * 4. Upsert WatchSession.
-   * 5. Update User.watchHistory (lightweight ref list).
+   * 2. Check target video existence.
+   * 3. Determine if video is completed (progress >= 90% of duration).
+   * 4. Check if this is a rewatch (existing session that was completed).
+   * 5. Upsert WatchSession.
+   * 6. Update User.watchHistory (lightweight ref list).
    */
   async recordWatchSession({ userId, videoId, progress, duration }) {
     if (progress < 0) {
@@ -35,6 +37,11 @@ class WatchService {
     }
     if (duration <= 0) {
       throw new ApiError(400, "Duration must be greater than zero");
+    }
+
+    const video = await videoRepository.findById(videoId);
+    if (!video) {
+      throw new ApiError(404, "Video not found");
     }
     if (progress > duration) {
       // Clamp — some players send progress slightly over duration

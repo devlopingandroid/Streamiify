@@ -1,4 +1,5 @@
 import watchLaterRepository from "../repositories/watchLater.repository.js";
+import videoRepository from "../repositories/video.repository.js";
 import ApiError from "../utils/ApiError.js";
 
 /**
@@ -19,6 +20,11 @@ class WatchLaterService {
    * Otherwise → save.
    */
   async toggleWatchLater(userId, videoId) {
+    const video = await videoRepository.findById(videoId);
+    if (!video) {
+      throw new ApiError(404, "Video not found");
+    }
+
     const existing = await watchLaterRepository.findByOwnerAndVideo(
       userId,
       videoId

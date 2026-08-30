@@ -53,7 +53,7 @@ const validatePagination = [
     .toInt(),
   query("limit")
     .optional()
-    .isInt({ min: 1, max: 500 })
+    .isInt({ min: 1, max: 50 })
     .withMessage("Limit must be between 1 and 50")
     .toInt(),
   validate,

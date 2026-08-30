@@ -18,6 +18,10 @@ class LikeService {
     }
 
     const video = await videoRepository.findById(videoId);
+    if (!video) {
+      throw new ApiError(404, "Video not found");
+    }
+
     const existingLike = await likeRepository.findVideoLike(userId, videoId);
 
     let liked;
@@ -32,7 +36,7 @@ class LikeService {
         video: videoId,
       });
 
-      if (video && video.owner.toString() !== userId.toString()) {
+      if (video.owner.toString() !== userId.toString()) {
         await notificationService.notifyLike({
           recipient: video.owner,
           sender: userId,
@@ -43,7 +47,7 @@ class LikeService {
       liked = true;
     }
 
-    if (video?.owner) {
+    if (video.owner) {
       await deleteCache(CACHE_KEYS.ANALYTICS(video.owner));
     }
 
@@ -65,6 +69,11 @@ class LikeService {
       throw new ApiError(400, "Invalid comment ID");
     }
 
+    const comment = await commentRepository.findById(commentId);
+    if (!comment) {
+      throw new ApiError(404, "Comment not found");
+    }
+
     const existingLike = await likeRepository.findCommentLike(
       userId,
       commentId
@@ -82,9 +91,7 @@ class LikeService {
         comment: commentId,
       });
 
-      const comment = await commentRepository.findById(commentId);
-
-      if (comment && comment.owner.toString() !== userId.toString()) {
+      if (comment.owner.toString() !== userId.toString()) {
         await notificationService.notifyLike({
           recipient: comment.owner,
           sender: userId,

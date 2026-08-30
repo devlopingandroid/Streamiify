@@ -11,6 +11,8 @@ import {
   getDashboard,
 } from "../controllers/analytics.controller.js";
 
+import { validateAnalyticsQuery } from "../validators/analytics.validator.js";
+
 const router = Router();
 
 /**
@@ -24,16 +26,16 @@ router.use(verifyJWT);
  * ============================================================================
  */
 
-router.get("/overview", getOverview);
+router.get("/overview", validateAnalyticsQuery, getOverview);
 
-router.get("/views", getViews);
+router.get("/views", validateAnalyticsQuery, getViews);
 
-router.get("/watch-time", getWatchTime);
+router.get("/watch-time", validateAnalyticsQuery, getWatchTime);
 
-router.get("/top-videos", getTopVideos);
+router.get("/top-videos", validateAnalyticsQuery, getTopVideos);
 
-router.get("/subscribers", getSubscribers);
+router.get("/subscribers", validateAnalyticsQuery, getSubscribers);
 
-router.get("/dashboard", getDashboard);
+router.get("/dashboard", validateAnalyticsQuery, getDashboard);
 
 export default router;

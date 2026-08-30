@@ -88,20 +88,16 @@ const MOCK_VIDEOS = [
   },
 ];
 
-export const getVideosApi = async (query = "") => {
+export const getVideosApi = async (params = "") => {
   try {
-    const response = await apiClient.get(
-      `/videos?query=${encodeURIComponent(query)}`
-    );
-
-    console.log("VIDEOS API");
-    console.log(response.data);
+    const queryParams =
+      typeof params === "string" ? { query: params } : params;
+    const response = await apiClient.get("/videos", {
+      params: queryParams,
+    });
 
     return response.data;
   } catch (error) {
-    console.log("VIDEOS API ERROR");
-    console.log(error);
-
     throw error;
   }
 };

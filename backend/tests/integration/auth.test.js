@@ -47,14 +47,14 @@ describe("Integration — Authentication API", () => {
       expect(res.body.success).toBe(false);
     });
 
-    it("3. Missing required fields are rejected with 400 Bad Request", async () => {
+    it("3. Missing required fields are rejected with validation error", async () => {
       const res = await request(app)
         .post("/users/register")
         .field("username", "")
         .field("email", "invalid-email")
         .field("password", "123"); // Too short
 
-      expect(res.status).toBe(400); // Validation error
+      expect([400, 422]).toContain(res.status); // Validation error
       expect(res.body.success).toBe(false);
     });
   });

@@ -66,3 +66,21 @@ export const createComment = async (ownerId, videoId, overrides = {}) => {
   const comment = await Comment.create(commentData);
   return comment;
 };
+
+/**
+ * Creates a test playlist document in the in-memory MongoDB database.
+ */
+export const createPlaylist = async (ownerId, overrides = {}) => {
+  const randomSuffix = Math.floor(Math.random() * 100000);
+  const playlistData = {
+    name: `Test Playlist ${randomSuffix}`,
+    description: `Test Description ${randomSuffix}`,
+    owner: new mongoose.Types.ObjectId(ownerId),
+    videos: [],
+    visibility: "public",
+    ...overrides,
+  };
+
+  const playlist = await Playlist.create(playlistData);
+  return playlist;
+};

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, useCallback } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-hot-toast";
 
@@ -46,7 +46,7 @@ export const AnalyticsPage = () => {
       await queryClient.invalidateQueries({ queryKey: ["analytics"] });
       setLastUpdated(new Date());
       toast.success("Analytics updated successfully.", { id: "refresh-toast" });
-    } catch (err) {
+    } catch (_err) {
       toast.error("Failed to refresh analytics.", { id: "refresh-toast" });
     }
   }, [queryClient]);
@@ -123,7 +123,7 @@ export const AnalyticsPage = () => {
       document.body.removeChild(link);
       
       toast.success("CSV report downloaded successfully.");
-    } catch (error) {
+    } catch (_error) {
       toast.error("An error occurred during CSV creation.");
     }
   }, [dashboardQuery.data, topVideosQuery.data, period]);

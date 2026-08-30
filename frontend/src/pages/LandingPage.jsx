@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
 import { AppLogo } from "../components/ui/AppLogo";
 import {
@@ -9,8 +9,6 @@ import {
   ArrowRight,
   Globe,
   CheckCircle2,
-  Lock,
-  Search,
   Bell,
   Home as HomeIcon,
   Folder,
@@ -19,19 +17,9 @@ import {
   Server,
   Users as UsersIcon,
   Settings as SettingsIcon,
-  TrendingUp,
-  Cpu,
-  HardDrive,
-  Activity,
-  Layers,
-  Sparkles,
-  Terminal,
-  FileText,
-  Key
 } from "lucide-react";
 
 export const LandingPage = () => {
-  const [activeTab, setActiveTab] = useState("overview");
 
   return (
     <div className="min-h-screen bg-[#F8FAFC] text-[#111827] font-sans relative overflow-x-hidden selection:bg-indigo-100 selection:text-indigo-900">

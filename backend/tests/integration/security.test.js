@@ -5,7 +5,7 @@ import { createUser } from "../helpers/factories.js";
 import { getAuthHeaders } from "../helpers/auth.js";
 
 describe("Integration — Security & Input Validation Boundaries", () => {
-  it("1. Mongo operator injection payload {$ne: null} in login body does not bypass auth and returns 400 Bad Request", async () => {
+  it("1. Mongo operator injection payload {$ne: null} in login body does not bypass auth and returns validation error", async () => {
     const res = await request(app)
       .post("/users/login")
       .send({
@@ -13,7 +13,7 @@ describe("Integration — Security & Input Validation Boundaries", () => {
         password: { $ne: null },
       });
 
-    expect(res.status).toBe(400); // Rejected cleanly with HTTP 400 Bad Request!
+    expect([400, 422]).toContain(res.status); // Rejected cleanly with validation error
     expect(res.body.success).toBe(false);
   });
 

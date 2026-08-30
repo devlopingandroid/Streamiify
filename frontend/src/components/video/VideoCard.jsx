@@ -17,14 +17,6 @@ export const VideoCard = ({ video, layout = "grid" }) => {
   const navigate = useNavigate();
   const { user } = useSelector((state) => state.auth);
 
-  if (!video) return null;
-
-  const videoId = video._id || video.id;
-
-  // Ownership check
-  const ownerId = video.owner?._id || video.owner?.id || video.owner;
-  const isOwner = user && ownerId && (user._id === ownerId || user.id === ownerId);
-
   const [menuOpen, setMenuOpen] = useState(false);
   const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
   const [isPlaylistModalOpen, setIsPlaylistModalOpen] = useState(false);
@@ -35,11 +27,20 @@ export const VideoCard = ({ video, layout = "grid" }) => {
     isToggling: isWatchLaterToggling,
     togglingVideoId
   } = useWatchLater();
-  const isWatchLater = watchLaterVideos?.some((v) => (v._id || v.id || v) === videoId);
-  const isWatchLaterPending = isWatchLaterToggling && (togglingVideoId === videoId);
 
   const deleteMutation = useDeleteVideo();
   const toggleStatusMutation = useToggleVideoStatus();
+
+  if (!video) return null;
+
+  const videoId = video._id || video.id;
+
+  // Ownership check
+  const ownerId = video.owner?._id || video.owner?.id || video.owner;
+  const isOwner = user && ownerId && (user._id === ownerId || user.id === ownerId);
+
+  const isWatchLater = watchLaterVideos?.some((v) => (v._id || v.id || v) === videoId);
+  const isWatchLaterPending = isWatchLaterToggling && (togglingVideoId === videoId);
 
   const handleDeleteConfirm = () => {
     if (!videoId) return;

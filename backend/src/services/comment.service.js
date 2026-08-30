@@ -17,13 +17,16 @@ class CommentService {
       throw new ApiError(400, "Comment content is required");
     }
 
+    const video = await videoRepository.findById(videoId);
+    if (!video) {
+      throw new ApiError(404, "Video not found");
+    }
+
     const comment = await commentRepository.create({
       owner: userId,
       video: videoId,
       content: content.trim(),
     });
-
-    const video = await videoRepository.findById(videoId);
 
     if (video) {
       if (video.owner) {

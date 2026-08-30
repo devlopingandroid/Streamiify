@@ -1,6 +1,7 @@
 import subscriptionRepository from "../repositories/subscription.repository.js";
 import ApiError from "../utils/ApiError.js";
 import notificationService from "./notification.service.js";
+import User from "../models/user.model.js";
 /**
  * SubscriptionService
  *
@@ -14,22 +15,19 @@ class SubscriptionService {
    *
    * Rules enforced here (not in model, not in controller):
    * 1. User cannot subscribe to themselves.
-   * 2. If subscription exists → delete it (unsubscribe).
-   * 3. If subscription does not exist → create it (subscribe).
-   *
-   * Returns { subscribed: boolean } so the frontend can update UI state
-   * without a follow-up status call.
-   *
-   * Race condition note:
-   * Two simultaneous subscribe requests for the same pair will result in
-   * one success and one MongoDB duplicate key error (code 11000).
-   * We catch that specific error and return a clean ApiError rather than
-   * letting a 500 bubble up.
+   * 2. Target channel user must exist.
+   * 3. If subscription exists → delete it (unsubscribe).
+   * 4. If subscription does not exist → create it (subscribe).
    */
   async toggleSubscription(subscriberId, channelId) {
     // Rule 1: prevent self-subscription
     if (subscriberId.toString() === channelId.toString()) {
       throw new ApiError(400, "You cannot subscribe to your own channel");
+    }
+
+    const channel = await User.findById(channelId);
+    if (!channel) {
+      throw new ApiError(404, "Channel not found");
     }
 
     const existing = await subscriptionRepository.findOne(

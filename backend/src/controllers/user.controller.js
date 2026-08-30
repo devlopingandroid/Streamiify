@@ -314,7 +314,10 @@ const changeCurrentPassword = asyncHandler(async (req, res) => {
   if (!(newPassword === confirmPassword)) {
     throw new ApiError(400, "Password doesn't match.");
   }
-  const user = await User.findById(req.user?.id);
+  const user = await User.findById(req.user?._id);
+  if (!user) {
+    throw new ApiError(404, "User not found");
+  }
   const isPasswordCorrect = await user.isPasswordCorrect(oldPassword);
 
   if (!isPasswordCorrect) {

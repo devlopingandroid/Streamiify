@@ -35,12 +35,13 @@ const NotFoundPage = lazy(() => import("../pages/error/NotFoundPage").then(modul
 const ForbiddenPage = lazy(() => import("../pages/error/ForbiddenPage").then(module => ({ default: module.ForbiddenPage })));
 const ServerErrorPage = lazy(() => import("../pages/error/ServerErrorPage").then(module => ({ default: module.ServerErrorPage })));
 const OfflinePage = lazy(() => import("../pages/error/OfflinePage").then(module => ({ default: module.OfflinePage })));
-const MaintenancePage = lazy(() => import("../pages/error/MaintenancePage").then(module => ({ default: module.MaintenancePage })));
+import { ErrorBoundary } from "../components/ui/ErrorBoundary";
 
 export const AppRoutes = () => {
   return (
     <BrowserRouter>
-      <Suspense fallback={<PageLoader message="Loading page assets..." />}>
+      <ErrorBoundary>
+        <Suspense fallback={<PageLoader message="Loading page assets..." />}>
         <Routes>
           {/* Public-Only Gateway (Sign-in / Register / Forgot Password / Reset Password / Email Verification Pending / Verify Token) */}
           <Route element={<PublicOnlyRoute redirectPath="/" />}>
@@ -91,7 +92,8 @@ export const AppRoutes = () => {
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </Suspense>
-    </BrowserRouter>
+    </ErrorBoundary>
+  </BrowserRouter>
   );
 };
 export default AppRoutes;

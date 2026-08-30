@@ -233,9 +233,12 @@ class VideoService {
       });
     }
 
+    const safePage = Math.max(Number(page) || 1, 1);
+    const safeLimit = Math.min(Math.max(Number(limit) || 10, 1), 50);
+
     return await videoRepository.getFeed(pipeline, {
-      page: Number(page),
-      limit: Number(limit),
+      page: safePage,
+      limit: safeLimit,
     });
   }
 
@@ -305,6 +308,7 @@ class VideoService {
     ]);
 
     await videoRepository.delete(videoId);
+    await deleteCache(CACHE_KEYS.ANALYTICS(user._id));
 
     return true;
   }
@@ -323,7 +327,10 @@ class VideoService {
       throw new ApiError(403, "You are not allowed to perform this action.");
     }
 
-    return await videoRepository.togglePublish(video);
+    const updatedVideo = await videoRepository.togglePublish(video);
+    await deleteCache(CACHE_KEYS.ANALYTICS(user._id));
+
+    return updatedVideo;
   }
 }
 

@@ -38,7 +38,7 @@ export const getOverviewService = async (ownerId) => {
     throw new ApiError(400, "Owner Id is required");
   }
 
-  const cacheKey = `analytics:${ownerId}`;
+  const cacheKey = CACHE_KEYS.ANALYTICS(ownerId);
 
   // Check Redis
   const cachedData = await getCache(cacheKey);

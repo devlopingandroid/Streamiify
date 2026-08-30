@@ -3,6 +3,9 @@ import ApiError from "../utils/ApiError.js";
 import notificationService from "./notification.service.js";
 import videoRepository from "../repositories/video.repository.js";
 import logger from "../utils/logger.js";
+import { deleteCache } from "./cache.service.js";
+import { CACHE_KEYS } from "../constants/cacheKeys.js";
+
 class CommentService {
   /**
    * ------------------------------------------------------------------------
@@ -23,6 +26,9 @@ class CommentService {
     const video = await videoRepository.findById(videoId);
 
     if (video) {
+      if (video.owner) {
+        await deleteCache(CACHE_KEYS.ANALYTICS(video.owner));
+      }
       try {
         await notificationService.notifyComment({
           recipient: video.owner,
@@ -85,20 +91,23 @@ class CommentService {
    * ------------------------------------------------------------------------
    */
   async getVideoComments(videoId, page = 1, limit = 10) {
+    const safePage = Math.max(Number(page) || 1, 1);
+    const safeLimit = Math.min(Math.max(Number(limit) || 10, 1), 50);
+
     const { comments, total } = await commentRepository.getVideoComments(
       videoId,
-      page,
-      limit
+      safePage,
+      safeLimit
     );
 
     return {
       comments,
       total,
-      page,
-      limit,
-      totalPages: Math.ceil(total / limit),
-      hasNextPage: page * limit < total,
-      hasPrevPage: page > 1,
+      page: safePage,
+      limit: safeLimit,
+      totalPages: Math.ceil(total / safeLimit) || 1,
+      hasNextPage: safePage * safeLimit < total,
+      hasPrevPage: safePage > 1,
     };
   }
 
@@ -157,6 +166,11 @@ class CommentService {
 
     if (comment.owner.toString() !== userId.toString()) {
       throw new ApiError(403, "You are not allowed to delete this comment.");
+    }
+
+    const video = await videoRepository.findById(comment.video);
+    if (video?.owner) {
+      await deleteCache(CACHE_KEYS.ANALYTICS(video.owner));
     }
 
     if (comment.parentComment) {

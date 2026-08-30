@@ -1,32 +1,30 @@
-import redisClient from "../config/redis.js";
+import { getRedisClient } from "../config/redis.js";
 import logger from "../utils/logger.js";
 
 /**
- * ============================================================================
- * Cache Service
- * ============================================================================
- * Wrapper around Redis
- *
- * Supports:
- * - Get Cache
- * - Set Cache
- * - Delete Cache
- * - Delete by Pattern
- * - TTL
- * ============================================================================
+ * Helper to verify whether Redis client is initialized and connected.
  */
+const isRedisReady = () => {
+  const client = getRedisClient();
+  return client && (client.isReady || client.isOpen);
+};
 
 /**
  * --------------------------------------------------------------------------
  * Get Cache
  * --------------------------------------------------------------------------
  */
-
 export const getCache = async (key) => {
+  if (!isRedisReady()) {
+    return null;
+  }
+
   try {
-    const data = await redisClient.get(key);
+    const client = getRedisClient();
+    const data = await client.get(key);
 
     if (!data) {
+      logger.debug(`Cache MISS → ${key}`);
       return null;
     }
 
@@ -49,10 +47,14 @@ export const getCache = async (key) => {
  * Set Cache
  * --------------------------------------------------------------------------
  */
-
 export const setCache = async (key, value, ttl = 300) => {
+  if (!isRedisReady()) {
+    return;
+  }
+
   try {
-    await redisClient.setEx(key, ttl, JSON.stringify(value));
+    const client = getRedisClient();
+    await client.setEx(key, ttl, JSON.stringify(value));
 
     logger.debug(`Cache SET → ${key}`);
   } catch (error) {
@@ -69,10 +71,14 @@ export const setCache = async (key, value, ttl = 300) => {
  * Delete Single Cache
  * --------------------------------------------------------------------------
  */
-
 export const deleteCache = async (key) => {
+  if (!isRedisReady()) {
+    return;
+  }
+
   try {
-    await redisClient.del(key);
+    const client = getRedisClient();
+    await client.del(key);
 
     logger.debug(`Cache DELETE → ${key}`);
   } catch (error) {
@@ -89,14 +95,18 @@ export const deleteCache = async (key) => {
  * Delete Multiple Keys
  * --------------------------------------------------------------------------
  */
-
 export const deletePattern = async (pattern) => {
+  if (!isRedisReady()) {
+    return;
+  }
+
   try {
-    const keys = await redisClient.keys(pattern);
+    const client = getRedisClient();
+    const keys = await client.keys(pattern);
 
     if (!keys.length) return;
 
-    await redisClient.del(keys);
+    await client.del(keys);
 
     logger.debug(`Cache Pattern DELETE → ${pattern}`);
   } catch (error) {
@@ -113,10 +123,14 @@ export const deletePattern = async (pattern) => {
  * Check Key Exists
  * --------------------------------------------------------------------------
  */
-
 export const hasCache = async (key) => {
+  if (!isRedisReady()) {
+    return false;
+  }
+
   try {
-    const exists = await redisClient.exists(key);
+    const client = getRedisClient();
+    const exists = await client.exists(key);
 
     return exists === 1;
   } catch (error) {
@@ -135,10 +149,14 @@ export const hasCache = async (key) => {
  * Get TTL
  * --------------------------------------------------------------------------
  */
-
 export const getTTL = async (key) => {
+  if (!isRedisReady()) {
+    return -1;
+  }
+
   try {
-    return await redisClient.ttl(key);
+    const client = getRedisClient();
+    return await client.ttl(key);
   } catch (error) {
     logger.error({
       message: "Redis TTL Error",
@@ -149,3 +167,4 @@ export const getTTL = async (key) => {
     return -1;
   }
 };
+

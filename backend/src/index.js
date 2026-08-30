@@ -6,15 +6,14 @@ import { app } from "./app.js";
 import { connectRedis, disconnectRedis } from "./config/redis.js";
 import logger from "./utils/logger.js";
 
-// -----------------------------
-// Redis (optional)
-// -----------------------------
-connectRedis().catch(() => {
-  logger.warn("⚠️ Running without Redis.");
-});
-
 try {
   await connectDB();
+
+  try {
+    await connectRedis();
+  } catch (redisErr) {
+    logger.warn(`⚠️ Redis initialization failed: ${redisErr.message}. Running without cache.`);
+  }
 
   const PORT = process.env.PORT || 8000;
 

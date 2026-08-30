@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import WatchSession from "../../models/watchSession.model.js";
+import Video from "../../models/video.model.js";
 
 /**
  * ============================================================================
@@ -19,38 +20,37 @@ import WatchSession from "../../models/watchSession.model.js";
 export const getWatchTimeAnalytics = async (ownerId) => {
   const ownerObjectId = new mongoose.Types.ObjectId(ownerId);
 
+  // Fetch creator's video IDs first to allow index-backed $match on WatchSession
+  const creatorVideos = await Video.find({ owner: ownerObjectId })
+    .select("_id")
+    .lean();
+
+  const creatorVideoIds = creatorVideos.map((v) => v._id);
+
+  if (!creatorVideoIds.length) {
+    return {
+      totalWatchTime: 0,
+      averageWatchDuration: 0,
+      completedViews: 0,
+      incompleteViews: 0,
+      completionRate: 0,
+      totalSessions: 0,
+    };
+  }
+
   const analytics = await WatchSession.aggregate([
     /**
-     * Join Video Collection
+     * Filter sessions for creator's videos first (Index-backed: { video: 1 })
      */
-
-    {
-      $lookup: {
-        from: "videos",
-        localField: "video",
-        foreignField: "_id",
-        as: "video",
-      },
-    },
-
-    {
-      $unwind: "$video",
-    },
-
-    /**
-     * Only creator's videos
-     */
-
     {
       $match: {
-        "video.owner": ownerObjectId,
+        video: { $in: creatorVideoIds },
       },
     },
 
     /**
-     * Aggregate
+     * Aggregate metrics directly without full collection joins
      */
-
     {
       $group: {
         _id: null,

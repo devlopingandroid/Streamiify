@@ -91,6 +91,7 @@ const videoSchema = new Schema(
 // Channel videos (Owner Profile)
 videoSchema.index({
   owner: 1,
+  status: 1,
   createdAt: -1,
 });
 

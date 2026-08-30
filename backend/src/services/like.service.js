@@ -3,6 +3,8 @@ import likeRepository from "../repositories/like.repository.js";
 import notificationService from "./notification.service.js";
 import videoRepository from "../repositories/video.repository.js";
 import commentRepository from "../repositories/comment.repository.js";
+import { deleteCache } from "./cache.service.js";
+import { CACHE_KEYS } from "../constants/cacheKeys.js";
 
 class LikeService {
   /**
@@ -15,6 +17,7 @@ class LikeService {
       throw new ApiError(400, "Invalid video ID");
     }
 
+    const video = await videoRepository.findById(videoId);
     const existingLike = await likeRepository.findVideoLike(userId, videoId);
 
     let liked;
@@ -29,8 +32,6 @@ class LikeService {
         video: videoId,
       });
 
-      const video = await videoRepository.findById(videoId);
-
       if (video && video.owner.toString() !== userId.toString()) {
         await notificationService.notifyLike({
           recipient: video.owner,
@@ -40,6 +41,10 @@ class LikeService {
       }
 
       liked = true;
+    }
+
+    if (video?.owner) {
+      await deleteCache(CACHE_KEYS.ANALYTICS(video.owner));
     }
 
     const totalLikes = await likeRepository.countVideoLikes(videoId);
@@ -142,26 +147,23 @@ class LikeService {
    * ------------------------------------------------------------------------
    */
   async getLikedVideos(userId, page = 1, limit = 10) {
+    const safePage = Math.max(Number(page) || 1, 1);
+    const safeLimit = Math.min(Math.max(Number(limit) || 10, 1), 50);
+
     const { likes, total } = await likeRepository.getLikedVideos(
       userId,
-      page,
-      limit
+      safePage,
+      safeLimit
     );
 
     return {
       likes,
-
       total,
-
-      page,
-
-      limit,
-
-      totalPages: Math.ceil(total / limit),
-
-      hasNextPage: page * limit < total,
-
-      hasPrevPage: page > 1,
+      page: safePage,
+      limit: safeLimit,
+      totalPages: Math.ceil(total / safeLimit) || 1,
+      hasNextPage: safePage * safeLimit < total,
+      hasPrevPage: safePage > 1,
     };
   }
 }

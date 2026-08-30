@@ -30,7 +30,10 @@ import {
   resetPasswordValidator,
 } from "../validators/user.validator.js";
 
-import { forgotPasswordLimiter } from "../middlewares/rateLimiter.middleware.js";
+import {
+  forgotPasswordLimiter,
+  authLimiter,
+} from "../middlewares/rateLimiter.middleware.js";
 
 import { validate } from "../validators/validation.middleware.js";
 
@@ -45,6 +48,7 @@ const router = Router();
 // Register
 router.post(
   "/register",
+  authLimiter,
   uploadUserFiles,
   registerValidator,
   validate,
@@ -52,10 +56,10 @@ router.post(
 );
 
 // Login
-router.post("/login", loginUser);
+router.post("/login", authLimiter, loginUser);
 
 // Refresh Token
-router.post("/refresh-token", refreshAccessToken);
+router.post("/refresh-token", authLimiter, refreshAccessToken);
 
 // Forgot Password
 router.post(
@@ -69,6 +73,7 @@ router.post(
 // Reset Password
 router.post(
   "/reset-password/:token",
+  authLimiter,
   resetPasswordValidator,
   validate,
   resetPassword

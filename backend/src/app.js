@@ -75,7 +75,7 @@ app.use(
     limit: "10kb",
   })
 );
-//app.use(mongoSanitize());
+app.use(mongoSanitize());
 
 app.use(hpp());
 

@@ -102,13 +102,43 @@ export const deletePattern = async (pattern) => {
 
   try {
     const client = getRedisClient();
-    const keys = await client.keys(pattern);
+    const keys = [];
+
+    if (typeof client.scanIterator === "function") {
+      for await (const key of client.scanIterator({
+        MATCH: pattern,
+        COUNT: 100,
+      })) {
+        keys.push(key);
+      }
+    } else if (typeof client.scan === "function") {
+      let cursor = "0";
+      do {
+        const reply = await client.scan(cursor, { MATCH: pattern, COUNT: 100 });
+        cursor =
+          typeof reply === "object" && reply.cursor != null
+            ? String(reply.cursor)
+            : Array.isArray(reply)
+              ? String(reply[0])
+              : "0";
+        const matched =
+          typeof reply === "object" && reply.keys
+            ? reply.keys
+            : Array.isArray(reply)
+              ? reply[1]
+              : [];
+        if (Array.isArray(matched)) keys.push(...matched);
+      } while (cursor !== "0");
+    } else if (typeof client.keys === "function") {
+      const matched = await client.keys(pattern);
+      if (Array.isArray(matched)) keys.push(...matched);
+    }
 
     if (!keys.length) return;
 
     await client.del(keys);
 
-    logger.debug(`Cache Pattern DELETE → ${pattern}`);
+    logger.debug(`Cache Pattern DELETE → ${pattern} (${keys.length} keys)`);
   } catch (error) {
     logger.error({
       message: "Redis Pattern Delete Error",

@@ -22,6 +22,19 @@ cloudinary.config({
  *   response.public_id    → for deletion later (store in DB)
  *   response.duration     → seconds, videos only (store in DB)
  */
+const safeUnlink = async (filePath) => {
+  if (!filePath) return;
+  try {
+    if (fs.existsSync(filePath)) {
+      await fs.promises.unlink(filePath);
+    }
+  } catch (err) {
+    if (err.code !== "ENOENT") {
+      logger.warn(`Failed to remove temp file ${filePath}: ${err.message}`);
+    }
+  }
+};
+
 const uploadOnCloudinary = async (
   localFilePath,
   resourceType = "auto",
@@ -31,9 +44,7 @@ const uploadOnCloudinary = async (
     if (!localFilePath) return null;
 
     if (process.env.NODE_ENV === "test") {
-      if (fs.existsSync(localFilePath)) {
-        fs.unlinkSync(localFilePath);
-      }
+      await safeUnlink(localFilePath);
       return {
         url: "http://res.cloudinary.com/demo/image/upload/sample.jpg",
         secure_url: "http://res.cloudinary.com/demo/image/upload/sample.jpg",
@@ -43,9 +54,13 @@ const uploadOnCloudinary = async (
         resource_type: "image",
       };
     }
-    if (fs.existsSync(localFilePath)) {
-      fs.unlinkSync(localFilePath);
-    }
+
+    const response = await cloudinary.uploader.upload(localFilePath, {
+      resource_type: resourceType,
+      folder: folder,
+    });
+
+    await safeUnlink(localFilePath);
 
     return {
       secure_url: response.secure_url,
@@ -57,9 +72,7 @@ const uploadOnCloudinary = async (
       resource_type: response.resource_type,
     };
   } catch (error) {
-    if (fs.existsSync(localFilePath)) {
-      fs.unlinkSync(localFilePath);
-    }
+    await safeUnlink(localFilePath);
 
     logger.error({
       message: "Cloudinary Upload Error",

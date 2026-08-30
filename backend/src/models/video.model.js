@@ -107,6 +107,20 @@ videoSchema.index({
   views: -1,
 });
 
+// Category Feed & Candidate Recommendation Lookup
+videoSchema.index({
+  status: 1,
+  category: 1,
+  createdAt: -1,
+});
+
+// Tags Candidate Recommendation Lookup
+videoSchema.index({
+  status: 1,
+  tags: 1,
+  createdAt: -1,
+});
+
 // Full Text Search
 videoSchema.index({
   title: "text",

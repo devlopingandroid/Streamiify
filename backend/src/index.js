@@ -69,6 +69,22 @@ try {
 
   process.once("SIGINT", () => shutdown("SIGINT"));
   process.once("SIGTERM", () => shutdown("SIGTERM"));
+
+  process.on("unhandledRejection", (reason, promise) => {
+    logger.error({
+      message: "Unhandled Promise Rejection",
+      reason: reason?.message || reason,
+    });
+    shutdown("unhandledRejection");
+  });
+
+  process.on("uncaughtException", (error) => {
+    logger.error({
+      message: "Uncaught Exception",
+      error: error?.message || error,
+    });
+    shutdown("uncaughtException");
+  });
 } catch (err) {
   logger.error({
     message: "MongoDB connection failed",

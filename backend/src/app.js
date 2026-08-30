@@ -3,6 +3,8 @@ import cors from "cors";
 import helmet from "helmet";
 import compression from "compression";
 import cookieParser from "cookie-parser";
+import mongoose from "mongoose";
+import { isRedisReady } from "./config/redis.js";
 import commentRouter from "./routes/comment.routes.js";
 import userRouter from "./routes/user.routes.js";
 import videoRouter from "./routes/video.routes.js";
@@ -97,6 +99,21 @@ app.use("/notifications", notificationRouter);
 app.use("/recommendations", recommendationRouter);
 app.use("/analytics", analyticsRouter);
 app.use("/health", healthRouter);
+app.get("/ready", (req, res) => {
+  const isDbReady = mongoose.connection.readyState === 1;
+  const isCacheReady = isRedisReady();
+  const isReady = isDbReady;
+
+  return res.status(isReady ? 200 : 503).json({
+    success: isReady,
+    status: isReady ? "READY" : "NOT_READY",
+    dependencies: {
+      mongodb: isDbReady ? "connected" : "disconnected",
+      redis: isCacheReady ? "connected" : "disabled",
+    },
+    timestamp: new Date().toISOString(),
+  });
+});
 app.use((req, res, next) => {
   next(new ApiError(404, `Route ${req.originalUrl} not found`));
 });

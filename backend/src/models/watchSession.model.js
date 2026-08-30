@@ -86,12 +86,10 @@ const watchSessionSchema = new Schema(
   }
 );
 
-watchSessionSchema.pre("save", function (next) {
+watchSessionSchema.pre("save", function () {
   if (this.progress > this.duration) {
     this.progress = this.duration;
   }
-
-  next();
 });
 
 // ── Indexes ───────────────────────────────────────────────────────────────────

@@ -161,10 +161,12 @@ const loginUser = asyncHandler(async (req, res) => {
   }
 
   const query = {};
-  if (email) {
+  if (email && typeof email === "string") {
     query.email = email.toLowerCase().trim();
-  } else if (username) {
+  } else if (username && typeof username === "string") {
     query.username = username.toLowerCase().trim();
+  } else {
+    throw new ApiError(400, "Username or Email must be a valid string");
   }
 
   const user = await User.findOne(query);

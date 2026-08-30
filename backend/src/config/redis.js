@@ -30,7 +30,9 @@ export const connectRedis = async () => {
 
     logger.info("✅ Redis Connected");
   } catch (err) {
-    logger.warn(`⚠️ Redis not available: ${err.message}. Running without cache.`);
+    logger.warn(
+      `⚠️ Redis not available: ${err.message}. Running without cache.`
+    );
     redisClient = null;
   }
 
@@ -53,4 +55,3 @@ export const disconnectRedis = async () => {
 export const getRedisClient = () => redisClient;
 
 export default getRedisClient;
-

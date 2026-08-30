@@ -1,0 +1,52 @@
+name: Backend CI Quality Gate
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  backend-ci:
+    name: Backend Test & Quality Gate
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: backend
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+          cache-dependency-path: backend/package-lock.json
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Verify Code Formatting
+        run: npm run check-format
+
+      - name: Run Automated Test Suite
+        run: npm test
+        env:
+          NODE_ENV: test
+          ENABLE_REDIS: 'false'
+
+      - name: Run Test Coverage
+        run: npm run test:coverage
+        env:
+          NODE_ENV: test
+          ENABLE_REDIS: 'false'
+
+      - name: Upload Coverage Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-coverage-report
+          path: backend/coverage/
+          if-no-files-found: ignore

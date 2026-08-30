@@ -39,8 +39,11 @@ export const forgotPasswordLimiter = rateLimit({
     res.status(429).json({
       statusCode: 429,
       success: false,
-      message: "Too many password reset requests. Please try again after 15 minutes.",
-      errors: ["Too many password reset requests. Please try again after 15 minutes."],
+      message:
+        "Too many password reset requests. Please try again after 15 minutes.",
+      errors: [
+        "Too many password reset requests. Please try again after 15 minutes.",
+      ],
     });
   },
 });

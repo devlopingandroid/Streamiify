@@ -12,7 +12,9 @@ try {
   try {
     await connectRedis();
   } catch (redisErr) {
-    logger.warn(`⚠️ Redis initialization failed: ${redisErr.message}. Running without cache.`);
+    logger.warn(
+      `⚠️ Redis initialization failed: ${redisErr.message}. Running without cache.`
+    );
   }
 
   const PORT = process.env.PORT || 8000;

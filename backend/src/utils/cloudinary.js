@@ -30,10 +30,19 @@ const uploadOnCloudinary = async (
   try {
     if (!localFilePath) return null;
 
-    const response = await cloudinary.uploader.upload(localFilePath, {
-      resource_type: resourceType,
-      folder,
-    });
+    if (process.env.NODE_ENV === "test") {
+      if (fs.existsSync(localFilePath)) {
+        fs.unlinkSync(localFilePath);
+      }
+      return {
+        url: "http://res.cloudinary.com/demo/image/upload/sample.jpg",
+        secure_url: "http://res.cloudinary.com/demo/image/upload/sample.jpg",
+        public_id: "test_public_id_123",
+        duration: 100,
+        format: "jpg",
+        resource_type: "image",
+      };
+    }
     if (fs.existsSync(localFilePath)) {
       fs.unlinkSync(localFilePath);
     }

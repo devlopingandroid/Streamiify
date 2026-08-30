@@ -35,6 +35,7 @@ const NotFoundPage = lazy(() => import("../pages/error/NotFoundPage").then(modul
 const ForbiddenPage = lazy(() => import("../pages/error/ForbiddenPage").then(module => ({ default: module.ForbiddenPage })));
 const ServerErrorPage = lazy(() => import("../pages/error/ServerErrorPage").then(module => ({ default: module.ServerErrorPage })));
 const OfflinePage = lazy(() => import("../pages/error/OfflinePage").then(module => ({ default: module.OfflinePage })));
+const MaintenancePage = lazy(() => import("../pages/error/MaintenancePage").then(module => ({ default: module.MaintenancePage })));
 import { ErrorBoundary } from "../components/ui/ErrorBoundary";
 
 export const AppRoutes = () => {

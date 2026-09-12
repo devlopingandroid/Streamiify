@@ -15,6 +15,25 @@ jobs:
       run:
         working-directory: backend
 
+    env:
+      NODE_ENV: test
+      PORT: '8000'
+      MONGO_URI: mongodb://localhost:27017/streamify_test
+      ACCESS_TOKEN_SECRET: test_access_token_secret_ci_123456789
+      ACCESS_TOKEN_EXPIRE: 1d
+      REFRESH_TOKEN_SECRET: test_refresh_token_secret_ci_123456789
+      REFRESH_TOKEN_EXPIRE: 7d
+      CLOUDINARY_CLOUD_NAME: test-cloud
+      CLOUDINARY_API_KEY: test-key
+      CLOUDINARY_API_SECRET: test-secret
+      REDIS_URL: redis://localhost:6379
+      ENABLE_REDIS: 'false'
+      CORS_ORIGIN: http://localhost:3000
+      MAX_VIDEO_SIZE: '1073741824'
+      RESEND_API_KEY: re_test_dummy_key_12345
+      FRONTEND_URL: http://localhost:3000
+      EMAIL_FROM: Streamify <onboarding@resend.dev>
+
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -34,15 +53,9 @@ jobs:
 
       - name: Run Automated Test Suite
         run: npm test
-        env:
-          NODE_ENV: test
-          ENABLE_REDIS: 'false'
 
       - name: Run Test Coverage
         run: npm run test:coverage
-        env:
-          NODE_ENV: test
-          ENABLE_REDIS: 'false'
 
       - name: Upload Coverage Artifacts
         uses: actions/upload-artifact@v4

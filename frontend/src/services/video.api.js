@@ -137,6 +137,7 @@ export const uploadVideoApi = async (formData, onUploadProgress) => {
     headers: {
       "Content-Type": "multipart/form-data",
     },
+    timeout: 0,
     onUploadProgress,
   });
   return response.data;

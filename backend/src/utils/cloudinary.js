@@ -9,32 +9,54 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-/**
- * Upload a file to Cloudinary.
- *
- * @param {string} localFilePath  - temp path from multer
- * @param {string} resourceType   - "image" | "video" | "auto" (default: "auto")
- * @param {string} folder         - Cloudinary folder (default: "streamify")
- * @returns {object|null}         - full Cloudinary response or null on failure
- *
- * Response fields you'll use:
- *   response.url          → CDN URL (store in DB)
- *   response.public_id    → for deletion later (store in DB)
- *   response.duration     → seconds, videos only (store in DB)
- */
 const safeUnlink = async (filePath) => {
   if (!filePath) return;
+
   try {
     if (fs.existsSync(filePath)) {
       await fs.promises.unlink(filePath);
     }
   } catch (err) {
     if (err.code !== "ENOENT") {
-      logger.warn(`Failed to remove temp file ${filePath}: ${err.message}`);
+      logger.warn(
+        `Failed to remove temp file ${filePath}: ${err.message}`
+      );
     }
   }
 };
 
+/**
+ * Upload large video using Cloudinary chunked upload.
+ * User does not need to handle chunks.
+ */
+const uploadLargeVideo = (localFilePath, options) => {
+  return new Promise((resolve, reject) => {
+    const uploadStream = cloudinary.uploader.upload_chunked(
+      localFilePath,
+      {
+        ...options,
+        chunk_size: 20 * 1024 * 1024, // 20 MB chunks
+      },
+      (error, result) => {
+        if (error) {
+          reject(error);
+          return;
+        }
+
+        resolve(result);
+      }
+    );
+
+    uploadStream.on("error", reject);
+  });
+};
+
+/**
+ * Upload a file to Cloudinary.
+ *
+ * Large videos use chunked upload automatically.
+ * Images use the normal upload API.
+ */
 const uploadOnCloudinary = async (
   localFilePath,
   resourceType = "auto",
@@ -45,9 +67,11 @@ const uploadOnCloudinary = async (
 
     if (process.env.NODE_ENV === "test") {
       await safeUnlink(localFilePath);
+
       return {
         url: "http://res.cloudinary.com/demo/image/upload/sample.jpg",
-        secure_url: "http://res.cloudinary.com/demo/image/upload/sample.jpg",
+        secure_url:
+          "http://res.cloudinary.com/demo/image/upload/sample.jpg",
         public_id: "test_public_id_123",
         duration: 100,
         format: "jpg",
@@ -55,14 +79,29 @@ const uploadOnCloudinary = async (
       };
     }
 
-    const response = await cloudinary.uploader.upload(localFilePath, {
+    const options = {
       resource_type: resourceType,
-      folder: folder,
-    });
+      folder,
+    };
 
+    let response;
+
+    if (resourceType === "video") {
+      // Large/chunked upload for videos.
+      response = await uploadLargeVideo(localFilePath, options);
+    } else {
+      // Normal upload for images and other resources.
+      response = await cloudinary.uploader.upload(
+        localFilePath,
+        options
+      );
+    }
+
+    // Remove temporary local file after successful upload.
     await safeUnlink(localFilePath);
 
     return {
+      url: response.secure_url,
       secure_url: response.secure_url,
       public_id: response.public_id,
       duration: response.duration,
@@ -72,44 +111,51 @@ const uploadOnCloudinary = async (
       resource_type: response.resource_type,
     };
   } catch (error) {
+    // Always clean up temporary file on failure.
     await safeUnlink(localFilePath);
 
     logger.error({
       message: "Cloudinary Upload Error",
       error: error.message,
     });
+
     return null;
   }
 };
+
 /**
- * Delete a file from Cloudinary by public_id.
- * Call this when deleting a video, replacing a thumbnail, or replacing avatar.
+ * Delete an uploaded resource from Cloudinary.
  *
- * @param {string} publicId      - stored in DB as videoFilePublicId / thumbnailPublicId / etc.
- * @param {string} resourceType  - "image" | "video" (must match what was uploaded)
- * @returns {object|null}        - { result: "ok" } on success, null on failure
+ * resourceType:
+ * - "image"
+ * - "video"
+ * - "raw"
  */
-const deleteFromCloudinary = async (publicId, resourceType = "image") => {
+const deleteFromCloudinary = async (
+  publicId,
+  resourceType = "image"
+) => {
   try {
     if (!publicId) return null;
 
-    const response = await cloudinary.uploader.destroy(publicId, {
+    const result = await cloudinary.uploader.destroy(publicId, {
       resource_type: resourceType,
     });
 
-    return {
-      url: response.secure_url,
-      public_id: response.public_id,
-      duration: response.duration,
-      width: response.width,
-      height: response.height,
-      format: response.format,
-      resource_type: response.resource_type,
-    }; // response.result === "ok" means deleted
+    return result;
   } catch (error) {
-    logger.error("[Cloudinary Delete Error]", error.message);
+    logger.error({
+      message: "Cloudinary Delete Error",
+      error: error.message,
+      publicId,
+      resourceType,
+    });
+
     return null;
   }
 };
 
-export { uploadOnCloudinary, deleteFromCloudinary };
+export {
+  uploadOnCloudinary,
+  deleteFromCloudinary,
+};

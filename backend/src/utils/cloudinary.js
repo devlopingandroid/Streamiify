@@ -18,9 +18,7 @@ const safeUnlink = async (filePath) => {
     }
   } catch (err) {
     if (err.code !== "ENOENT") {
-      logger.warn(
-        `Failed to remove temp file ${filePath}: ${err.message}`
-      );
+      logger.warn(`Failed to remove temp file ${filePath}: ${err.message}`);
     }
   }
 };
@@ -70,8 +68,7 @@ const uploadOnCloudinary = async (
 
       return {
         url: "http://res.cloudinary.com/demo/image/upload/sample.jpg",
-        secure_url:
-          "http://res.cloudinary.com/demo/image/upload/sample.jpg",
+        secure_url: "http://res.cloudinary.com/demo/image/upload/sample.jpg",
         public_id: "test_public_id_123",
         duration: 100,
         format: "jpg",
@@ -91,10 +88,7 @@ const uploadOnCloudinary = async (
       response = await uploadLargeVideo(localFilePath, options);
     } else {
       // Normal upload for images and other resources.
-      response = await cloudinary.uploader.upload(
-        localFilePath,
-        options
-      );
+      response = await cloudinary.uploader.upload(localFilePath, options);
     }
 
     // Remove temporary local file after successful upload.
@@ -131,10 +125,7 @@ const uploadOnCloudinary = async (
  * - "video"
  * - "raw"
  */
-const deleteFromCloudinary = async (
-  publicId,
-  resourceType = "image"
-) => {
+const deleteFromCloudinary = async (publicId, resourceType = "image") => {
   try {
     if (!publicId) return null;
 
@@ -155,7 +146,4 @@ const deleteFromCloudinary = async (
   }
 };
 
-export {
-  uploadOnCloudinary,
-  deleteFromCloudinary,
-};
+export { uploadOnCloudinary, deleteFromCloudinary };

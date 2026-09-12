@@ -4,8 +4,6 @@ services:
     image: redis:7
     container_name: streamify-redis
     restart: unless-stopped
-    ports:
-      - "6379:6379"
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 10s

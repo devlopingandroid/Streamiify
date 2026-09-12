@@ -38,7 +38,7 @@ describe("Integration — Step 6 Performance & Scalability Hardening", () => {
 
   describe("Temp File Upload & Cleanup Safety", () => {
     it("3. uploadOnCloudinary safely cleans up local temp file on upload", async () => {
-      const tempDir = path.join(process.cwd(), "public", "temp");
+      const tempDir = path.join(process.cwd(), "temp");
       if (!fs.existsSync(tempDir)) {
         fs.mkdirSync(tempDir, { recursive: true });
       }
@@ -55,7 +55,7 @@ describe("Integration — Step 6 Performance & Scalability Hardening", () => {
     });
 
     it("4. Concurrent temp file uploads do not interfere with one another", async () => {
-      const tempDir = path.join(process.cwd(), "public", "temp");
+      const tempDir = path.join(process.cwd(), "temp");
       if (!fs.existsSync(tempDir)) {
         fs.mkdirSync(tempDir, { recursive: true });
       }

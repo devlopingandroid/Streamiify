@@ -31,6 +31,8 @@ coverage/
 # Temporary files & uploads
 *.tmp
 *.temp
+backend/temp/*
+!backend/temp/.gitkeep
 backend/public/temp/*
 !backend/public/temp/.gitkeep
 

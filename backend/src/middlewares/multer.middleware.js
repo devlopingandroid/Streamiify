@@ -5,7 +5,7 @@ import ApiError from "../utils/ApiError.js";
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    const tempDir = path.join(process.cwd(), "public", "temp");
+    const tempDir = path.join(process.cwd(), "temp");
 
     if (!fs.existsSync(tempDir)) {
       fs.mkdirSync(tempDir, { recursive: true });

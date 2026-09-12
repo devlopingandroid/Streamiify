@@ -8,7 +8,7 @@ RUN npm ci
 
 COPY . .
 
-RUN mkdir -p public/temp
+RUN mkdir -p temp
 
 EXPOSE 8000
 
